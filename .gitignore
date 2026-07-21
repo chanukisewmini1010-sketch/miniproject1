@@ -1,0 +1,26 @@
+# ---------- Backend (Java / Maven) ----------
+backend/target/
+backend/.mvn/
+backend/*.iml
+backend/.idea/
+*.class
+
+# ---------- Frontend (Node / React) ----------
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/npm-debug.log*
+frontend/yarn-error.log*
+
+# ---------- IDE ----------
+.vscode/
+.idea/
+*.swp
+
+# ---------- OS ----------
+.DS_Store
+Thumbs.db
+
+# ---------- Logs ----------
+*.log
