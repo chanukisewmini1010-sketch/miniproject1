@@ -1,5 +1,6 @@
 package com.campushub.controller;
 
+import com.campushub.dto.ClubDto;
 import com.campushub.dto.EventDto;
 import com.campushub.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import java.util.List;
 
 /**
  * REST controller for Event management.
- * TODO (Member 4): wire up real responses once EventServiceImpl is implemented.
  */
 @RestController
 @RequestMapping("/api/events")
@@ -22,6 +22,17 @@ public class EventController {
     @GetMapping
     public ResponseEntity<List<EventDto>> getAllEvents() {
         return ResponseEntity.ok(eventService.getAllEvents());
+    }
+
+    /**
+     * Clubs for the event form's club picker.
+     *
+     * Mapped before /{id} so "club-options" is not swallowed by the id path.
+     * Temporary - see EventService.getClubOptions().
+     */
+    @GetMapping("/club-options")
+    public ResponseEntity<List<ClubDto>> getClubOptions() {
+        return ResponseEntity.ok(eventService.getClubOptions());
     }
 
     @GetMapping("/{id}")

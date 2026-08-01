@@ -1,0 +1,122 @@
+/* ============================================================
+   Button variants + a few bits main.css does not define yet.
+
+   Kept out of main.css (shared by every page) to avoid merge
+   conflicts. Note these rules are global once this file is
+   imported, not scoped to the Events page - so if the team wants
+   them everywhere, Member 1 can move the import into index.js
+   and delete it from Events.jsx.
+
+   Colours are deliberately dark enough for white text to pass
+   WCAG AA contrast; the lighter/brighter shades of green and
+   amber fail it.
+   ============================================================ */
+
+/* ---- Semantic button variants (extend .btn) ---- */
+
+/* create / confirm */
+.btn-success {
+  background-color: #15803d;
+}
+
+.btn-success:hover {
+  background-color: #166534;
+}
+
+/* modify */
+.btn-warning {
+  background-color: #b45309;
+}
+
+.btn-warning:hover {
+  background-color: #92400e;
+}
+
+/* neutral / dismiss */
+.btn-secondary {
+  background-color: #4b5563;
+}
+
+.btn-secondary:hover {
+  background-color: #374151;
+}
+
+/* destructive - ready for the Delete button once the team agrees
+   the cascade policy (step 6) */
+.btn-danger {
+  background-color: #b91c1c;
+}
+
+.btn-danger:hover {
+  background-color: #991b1b;
+}
+
+/* ---- Smaller button, for actions inside table rows ---- */
+.btn-sm {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+/* ---- Disabled state ---- */
+/* .btn has no disabled styling, so a button disabled during save
+   looks identical to an active one */
+.btn:disabled,
+.btn:disabled:hover {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   Events table layout
+   Scoped under .events-table so main.css's shared .table rules
+   are not altered for the other members' pages.
+   ============================================================ */
+
+/* keeps a narrow screen from overflowing the page sideways */
+.events-table {
+  overflow-x: auto;
+}
+
+/* without this, cells align on the baseline of the tallest cell -
+   which is the one containing buttons - so the text rows look
+   pushed down relative to the buttons */
+.events-table .table th,
+.events-table .table td {
+  vertical-align: middle;
+}
+
+.events-table .table th {
+  background-color: #f5f6f8;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* width:1% + nowrap shrinks a column to its content in a
+   width:100% table, letting the title column absorb the slack.
+   That stops the columns resizing as the rows change. */
+.events-table .table th:nth-child(2),
+.events-table .table td:nth-child(2) {
+  width: 1%;
+  white-space: nowrap;
+}
+
+/* actions column: only as wide as its buttons, pinned right */
+.events-table .table th:last-child,
+.events-table .table td:last-child {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* ---- Action buttons inside a table row ---- */
+.row-actions {
+  display: inline-flex;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+/* ---- Error text ---- */
+.error {
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
