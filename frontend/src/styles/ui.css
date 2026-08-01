@@ -1,43 +1,47 @@
-.btn-success {
+/* Variants are written as .btn.btn-x rather than .btn-x so they beat the
+   base .btn rule in main.css on specificity (0,2,0 vs 0,1,0) instead of
+   relying on which stylesheet happens to be injected last. */
+
+.btn.btn-success {
   background-color: #15803d;
 }
 
-.btn-success:hover {
+.btn.btn-success:hover {
   background-color: #166534;
 }
 
-.btn-warning {
+.btn.btn-warning {
   background-color: #b45309;
 }
 
-.btn-warning:hover {
+.btn.btn-warning:hover {
   background-color: #92400e;
 }
 
-.btn-secondary {
+.btn.btn-secondary {
   background-color: #4b5563;
 }
 
-.btn-secondary:hover {
+.btn.btn-secondary:hover {
   background-color: #374151;
 }
 
-.btn-danger {
+.btn.btn-danger {
   background-color: #b91c1c;
 }
 
-.btn-danger:hover {
+.btn.btn-danger:hover {
   background-color: #991b1b;
 }
 
-.btn-sm {
+.btn.btn-sm {
   padding: 0.3rem 0.75rem;
   font-size: 0.85rem;
 }
 
 /* applied per-button rather than to .btn, so the other members' pages keep
    the shared button layout untouched */
-.btn-icon {
+.btn.btn-icon {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -45,7 +49,7 @@
 
 /* 1em sizing means the icon scales with the button's font-size, so btn-sm
    gets a proportionally smaller icon for free */
-.btn-icon svg {
+.btn.btn-icon svg {
   flex-shrink: 0;
 }
 
@@ -125,20 +129,66 @@
 
 .upcoming-list {
   list-style: none;
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.85rem;
   padding: 0;
 }
 
 .upcoming-item {
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.4rem;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
 }
 
-.upcoming-item:last-child {
-  border-bottom: none;
+.upcoming-item + .upcoming-item {
+  border-top: 1px solid #eee;
+}
+
+.upcoming-item:hover {
+  background-color: #f5f6fa;
+}
+
+/* calendar-style date block - the main visual anchor of the card */
+.upcoming-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 2.9rem;
+  padding: 0.3rem 0.35rem;
+  border-radius: 6px;
+  background-color: #1e2a5e;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.upcoming-month {
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+.upcoming-day {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+/* min-width:0 lets the ellipsis work on the flex children below */
+.upcoming-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.upcoming-title,
+.upcoming-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .upcoming-title {
@@ -146,8 +196,21 @@
 }
 
 .upcoming-meta {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #666;
+}
+
+.upcoming-when {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #15803d;
+}
+
+.upcoming-all {
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .th-sort {

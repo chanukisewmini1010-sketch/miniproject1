@@ -1,8 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import eventApi from '../api/eventApi';
-import { formatEventDate } from '../utils/dateFormat';
 import '../styles/ui.css';
+
+function dateParts(value) {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  return {
+    date: parsed,
+    month: parsed.toLocaleString(undefined, { month: 'short' }).toUpperCase(),
+    day: parsed.toLocaleString(undefined, { day: 'numeric' }),
+    time: parsed.toLocaleString(undefined, { hour: 'numeric', minute: '2-digit' }),
+  };
+}
+
+function startOfDay(value) {
+  return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+}
+
+function relativeWhen(date) {
+  const days = Math.round((startOfDay(date) - startOfDay(new Date())) / 86400000);
+
+  if (days <= 0) {
+    return 'Today';
+  }
+
+  if (days === 1) {
+    return 'Tomorrow';
+  }
+
+  if (days < 14) {
+    return `In ${days} days`;
+  }
+
+  // floor rather than round, so "in 2 weeks" never means 20 days away
+  return `In ${Math.floor(days / 7)} weeks`;
+}
 
 function UpcomingEvents({ limit = 5 }) {
   const [events, setEvents] = useState([]);
@@ -50,18 +90,34 @@ function UpcomingEvents({ limit = 5 }) {
   return (
     <>
       <ul className="upcoming-list">
-        {events.map((event) => (
-          <li key={event.id} className="upcoming-item">
-            <span className="upcoming-title">{event.title}</span>
-            <span className="upcoming-meta">
-              {formatEventDate(event.eventDate)}
-              {event.location ? ` · ${event.location}` : ''}
-            </span>
-          </li>
-        ))}
+        {events.map((event) => {
+          const parts = dateParts(event.eventDate);
+
+          return (
+            <li key={event.id} className="upcoming-item">
+              <span className="upcoming-date" aria-hidden="true">
+                <span className="upcoming-month">{parts ? parts.month : '--'}</span>
+                <span className="upcoming-day">{parts ? parts.day : '-'}</span>
+              </span>
+
+              <span className="upcoming-body">
+                <span className="upcoming-title">{event.title}</span>
+                <span className="upcoming-meta">
+                  {parts ? parts.time : 'Date not set'}
+                  {event.location ? ` · ${event.location}` : ''}
+                </span>
+                {parts && (
+                  <span className="upcoming-when">{relativeWhen(parts.date)}</span>
+                )}
+              </span>
+            </li>
+          );
+        })}
       </ul>
 
-      <Link to="/events">View all events</Link>
+      <Link className="upcoming-all" to="/events">
+        View all events →
+      </Link>
     </>
   );
 }
