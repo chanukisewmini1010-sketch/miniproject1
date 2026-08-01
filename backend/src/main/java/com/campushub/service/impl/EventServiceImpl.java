@@ -11,6 +11,8 @@ import com.campushub.repository.EventRepository;
 import com.campushub.repository.UserRepository;
 import com.campushub.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,11 +33,10 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventDto> getAllEvents() {
-        return eventRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .toList();
+    public Page<EventDto> getAllEvents(String search, Pageable pageable) {
+        String term = search == null ? "" : search.trim();
+
+        return eventRepository.search(term, pageable).map(this::toDto);
     }
 
     @Override

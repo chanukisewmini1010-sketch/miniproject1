@@ -4,13 +4,65 @@ import eventApi from '../api/eventApi';
 import '../styles/modal.css';
 import '../styles/ui.css';
 
-const columns = [
-  { key: 'title', label: 'Event Title' },
-  { key: 'club', label: 'Club' },
-  { key: 'eventDate', label: 'Date' },
-  { key: 'location', label: 'Location' },
-  { key: 'actions', label: 'Actions' },
-];
+const PAGE_SIZES = [5, 10, 20];
+
+const EMPTY_PAGE = {
+  content: [],
+  number: 0,
+  totalPages: 0,
+  totalElements: 0,
+  first: true,
+  last: true,
+};
+
+const ICON_PROPS = {
+  width: '1em',
+  height: '1em',
+  viewBox: '0 0 24 24',
+  fill: 'currentColor',
+  'aria-hidden': true,
+  focusable: false,
+};
+
+function IconPlus() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+    </svg>
+  );
+}
+
+function IconPencil() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+    </svg>
+  );
+}
+
+function IconTrash() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+    </svg>
+  );
+}
+
+function IconCheck() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+    </svg>
+  );
+}
+
+function IconX() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+    </svg>
+  );
+}
 
 const EMPTY_FORM = {
   title: '',
@@ -40,24 +92,6 @@ function toInputDate(value) {
   return value ? value.slice(0, 16) : '';
 }
 
-function matchesSearch(event, clubName, term) {
-  if (!term) {
-    return true;
-  }
-
-  const needle = term.trim().toLowerCase();
-  if (!needle) {
-    return true;
-  }
-
-  const haystack = [event.title, clubName, event.location]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase();
-
-  return haystack.includes(needle);
-}
-
 function buildPayload(form) {
   const payload = {
     title: form.title.trim(),
@@ -80,11 +114,19 @@ function buildPayload(form) {
 }
 
 function Events() {
-  const [events, setEvents] = useState([]);
+  const [pageData, setPageData] = useState(EMPTY_PAGE);
   const [clubs, setClubs] = useState([]);
-  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [page, setPage] = useState(0);
+  const [size, setSize] = useState(PAGE_SIZES[0]);
+  const [sortField, setSortField] = useState('eventDate');
+  const [sortDir, setSortDir] = useState('asc');
+
+  const [search, setSearch] = useState('');
+  const [appliedSearch, setAppliedSearch] = useState('');
+  const [reloadToken, setReloadToken] = useState(0);
 
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -96,26 +138,29 @@ function Events() {
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
 
-  function loadEvents() {
-    return eventApi
-      .getAll()
-      .then((response) => {
-        setEvents(Array.isArray(response.data) ? response.data : []);
-        setError(null);
-      })
-      .catch(() => {
-        setError('Could not load events. Is the backend running on port 8080?');
-      });
+  function reload() {
+    setReloadToken((token) => token + 1);
   }
 
   useEffect(() => {
+    const timer = setTimeout(() => {
+      setAppliedSearch(search);
+      setPage(0);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  useEffect(() => {
     let ignore = false;
+    setLoading(true);
 
     eventApi
-      .getAll()
+      .getAll({ page, size, sort: `${sortField},${sortDir}`, search: appliedSearch })
       .then((response) => {
         if (!ignore) {
-          setEvents(Array.isArray(response.data) ? response.data : []);
+          setPageData(response.data || EMPTY_PAGE);
+          setError(null);
         }
       })
       .catch(() => {
@@ -128,6 +173,14 @@ function Events() {
           setLoading(false);
         }
       });
+
+    return () => {
+      ignore = true;
+    };
+  }, [page, size, sortField, sortDir, appliedSearch, reloadToken]);
+
+  useEffect(() => {
+    let ignore = false;
 
     eventApi
       .getClubOptions()
@@ -144,6 +197,28 @@ function Events() {
       ignore = true;
     };
   }, []);
+
+  function toggleSort(field) {
+    if (sortField === field) {
+      setSortDir((dir) => (dir === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDir('asc');
+    }
+
+    setPage(0);
+  }
+
+  function sortableHeader(label, field) {
+    const active = sortField === field;
+
+    return (
+      <button type="button" className="th-sort" onClick={() => toggleSort(field)}>
+        {label}
+        <span className="th-sort-arrow">{active ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}</span>
+      </button>
+    );
+  }
 
   function closeForm() {
     setShowForm(false);
@@ -238,7 +313,7 @@ function Events() {
       : eventApi.create(payload);
 
     request
-      .then(() => loadEvents())
+      .then(() => reload())
       .then(() => closeForm())
       .catch((err) => {
         setFormError(err.response?.data?.message || 'Could not save the event.');
@@ -256,7 +331,7 @@ function Events() {
 
     eventApi
       .remove(deleteTarget.id)
-      .then(() => loadEvents())
+      .then(() => reload())
       .then(() => closeDeleteConfirm())
       .catch((err) => {
         setDeleteError(err.response?.data?.message || 'Could not delete the event.');
@@ -274,37 +349,43 @@ function Events() {
     return clubNamesById.get(event.clubId) || `Club ${event.clubId}`;
   }
 
-  const filtered = events
-    .map((event) => ({ event, clubName: clubNameFor(event) }))
-    .filter(({ event, clubName }) => matchesSearch(event, clubName, search));
+  const columns = [
+    { key: 'title', label: sortableHeader('Event Title', 'title') },
+    { key: 'club', label: sortableHeader('Club', 'club.name') },
+    { key: 'eventDate', label: sortableHeader('Date', 'eventDate') },
+    { key: 'location', label: sortableHeader('Location', 'location') },
+    { key: 'actions', label: 'Actions' },
+  ];
 
-  const rows = filtered.map(({ event, clubName }) => ({
+  const rows = pageData.content.map((event) => ({
     id: event.id,
     title: event.title,
-    club: clubName,
+    club: clubNameFor(event),
     eventDate: formatEventDate(event.eventDate),
     location: event.location || '-',
     actions: (
       <span className="row-actions">
         <button
           type="button"
-          className="btn btn-warning btn-sm"
+          className="btn btn-warning btn-sm btn-icon"
           onClick={() => openEdit(event)}
         >
+          <IconPencil />
           Edit
         </button>
         <button
           type="button"
-          className="btn btn-danger btn-sm"
+          className="btn btn-danger btn-sm btn-icon"
           onClick={() => setDeleteTarget(event)}
         >
+          <IconTrash />
           Delete
         </button>
       </span>
     ),
   }));
 
-  const searching = search.trim().length > 0;
+  const searching = appliedSearch.trim().length > 0;
 
   return (
     <div className="page">
@@ -317,7 +398,12 @@ function Events() {
       {!loading && !error && (
         <>
           <p>
-            <button type="button" className="btn btn-success" onClick={openCreate}>
+            <button
+              type="button"
+              className="btn btn-success btn-icon"
+              onClick={openCreate}
+            >
+              <IconPlus />
               Add Event
             </button>
           </p>
@@ -334,18 +420,60 @@ function Events() {
             </label>
           </div>
 
-          <p>
-            {searching
-              ? `Showing ${rows.length} of ${events.length} events.`
-              : `${events.length} ${events.length === 1 ? 'event' : 'events'} found.`}
-          </p>
-
           {searching && rows.length === 0 ? (
-            <p className="table-empty">No events match &quot;{search.trim()}&quot;.</p>
+            <p className="table-empty">
+              No events match &quot;{appliedSearch.trim()}&quot;.
+            </p>
           ) : (
-            <div className="events-table">
-              <Table columns={columns} data={rows} />
-            </div>
+            <>
+              <div className="events-table">
+                <Table columns={columns} data={rows} />
+              </div>
+
+              <div className="pager">
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  disabled={pageData.first}
+                >
+                  Previous
+                </button>
+
+                <span className="pager-status">
+                  Page {pageData.number + 1} of {Math.max(1, pageData.totalPages)}
+                  {' - '}
+                  {pageData.totalElements} event
+                  {pageData.totalElements === 1 ? '' : 's'}
+                </span>
+
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={pageData.last}
+                >
+                  Next
+                </button>
+
+                <label className="pager-size">
+                  Rows
+                  <select
+                    value={size}
+                    onChange={(e) => {
+                      setSize(Number(e.target.value));
+                      setPage(0);
+                    }}
+                  >
+                    {PAGE_SIZES.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            </>
           )}
         </>
       )}
@@ -382,18 +510,20 @@ function Events() {
             <div className="modal-actions">
               <button
                 type="button"
-                className="btn btn-danger"
+                className="btn btn-danger btn-icon"
                 onClick={handleDelete}
                 disabled={deleting}
               >
+                <IconTrash />
                 {deleting ? 'Deleting...' : 'Delete'}
               </button>
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn btn-secondary btn-icon"
                 onClick={closeDeleteConfirm}
                 disabled={deleting}
               >
+                <IconX />
                 Cancel
               </button>
             </div>
@@ -491,15 +621,21 @@ function Events() {
               {formError && <p className="error">{formError}</p>}
 
               <div className="modal-actions">
-                <button type="submit" className="btn btn-success" disabled={saving}>
+                <button
+                  type="submit"
+                  className="btn btn-success btn-icon"
+                  disabled={saving}
+                >
+                  <IconCheck />
                   {saving ? 'Saving...' : 'Save'}
                 </button>
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-secondary btn-icon"
                   onClick={closeForm}
                   disabled={saving}
                 >
+                  <IconX />
                   Cancel
                 </button>
               </div>

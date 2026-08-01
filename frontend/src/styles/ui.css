@@ -35,6 +35,20 @@
   font-size: 0.85rem;
 }
 
+/* applied per-button rather than to .btn, so the other members' pages keep
+   the shared button layout untouched */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* 1em sizing means the icon scales with the button's font-size, so btn-sm
+   gets a proportionally smaller icon for free */
+.btn-icon svg {
+  flex-shrink: 0;
+}
+
 .btn:disabled,
 .btn:disabled:hover {
   opacity: 0.6;
@@ -69,7 +83,49 @@
 .events-table .table td:last-child {
   width: 1%;
   white-space: nowrap;
-  text-align: right;
+  text-align: center;
+}
+
+.th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.th-sort-arrow {
+  font-size: 0.7em;
+  opacity: 0.45;
+}
+
+.th-sort:hover .th-sort-arrow {
+  opacity: 0.9;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pager-status {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.pager-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  font-size: 0.9rem;
 }
 
 .row-actions {

@@ -2,6 +2,8 @@ package com.campushub.service;
 
 import com.campushub.dto.ClubDto;
 import com.campushub.dto.EventDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  */
 public interface EventService {
 
-    List<EventDto> getAllEvents();
+    Page<EventDto> getAllEvents(String search, Pageable pageable);
 
     List<ClubDto> getClubOptions();
 
