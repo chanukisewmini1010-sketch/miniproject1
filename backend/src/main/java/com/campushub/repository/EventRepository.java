@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
@@ -18,4 +21,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                or lower(e.club.name) like lower(concat('%', :term, '%'))
             """)
     Page<Event> search(@Param("term") String term, Pageable pageable);
+
+    List<Event> findByEventDateGreaterThanEqualOrderByEventDateAsc(
+            LocalDateTime from, Pageable pageable);
 }

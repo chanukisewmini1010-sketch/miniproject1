@@ -29,6 +29,12 @@ public class EventController {
         return ResponseEntity.ok(eventService.getAllEvents(search, pageable));
     }
 
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<EventDto>> getUpcomingEvents(
+            @RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.ok(eventService.getUpcomingEvents(limit));
+    }
+
     @GetMapping("/club-options")
     public ResponseEntity<List<ClubDto>> getClubOptions() {
         return ResponseEntity.ok(eventService.getClubOptions());

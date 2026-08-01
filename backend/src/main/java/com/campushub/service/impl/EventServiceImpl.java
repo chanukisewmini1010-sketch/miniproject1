@@ -12,11 +12,13 @@ import com.campushub.repository.UserRepository;
 import com.campushub.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,6 +39,19 @@ public class EventServiceImpl implements EventService {
         String term = search == null ? "" : search.trim();
 
         return eventRepository.search(term, pageable).map(this::toDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EventDto> getUpcomingEvents(int limit) {
+        int capped = Math.min(Math.max(limit, 1), 50);
+
+        return eventRepository
+                .findByEventDateGreaterThanEqualOrderByEventDateAsc(
+                        LocalDateTime.now(), PageRequest.of(0, capped))
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
     @Override

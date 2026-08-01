@@ -14,6 +14,8 @@ public interface EventService {
 
     Page<EventDto> getAllEvents(String search, Pageable pageable);
 
+    List<EventDto> getUpcomingEvents(int limit);
+
     List<ClubDto> getClubOptions();
 
     EventDto getEventById(Long id);

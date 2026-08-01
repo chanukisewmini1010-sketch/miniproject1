@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Table from '../components/Table';
 import eventApi from '../api/eventApi';
+import { formatEventDate, toInputDate } from '../utils/dateFormat';
 import '../styles/modal.css';
 import '../styles/ui.css';
 
@@ -71,26 +72,6 @@ const EMPTY_FORM = {
   eventDate: '',
   location: '',
 };
-
-function formatEventDate(value) {
-  if (!value) {
-    return '-';
-  }
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    return value;
-  }
-
-  return parsed.toLocaleString(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  });
-}
-
-function toInputDate(value) {
-  return value ? value.slice(0, 16) : '';
-}
 
 function buildPayload(form) {
   const payload = {
