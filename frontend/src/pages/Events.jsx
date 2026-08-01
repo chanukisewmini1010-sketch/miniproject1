@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Table from '../components/Table';
+import toast from 'react-hot-toast';
 import eventApi from '../api/eventApi';
 import { formatEventDate, toInputDate } from '../utils/dateFormat';
 import {
@@ -253,7 +254,10 @@ function Events() {
 
     request
       .then(() => reload())
-      .then(() => closeForm())
+      .then(() => {
+        toast.success(editingId ? 'Event updated' : 'Event created');
+        closeForm();
+      })
       .catch((err) => {
         setFormError(err.response?.data?.message || 'Could not save the event.');
       })
@@ -268,10 +272,15 @@ function Events() {
     setDeleting(true);
     setDeleteError(null);
 
+    const { title } = deleteTarget;
+
     eventApi
       .remove(deleteTarget.id)
       .then(() => reload())
-      .then(() => closeDeleteConfirm())
+      .then(() => {
+        toast.success(`Deleted "${title}"`);
+        closeDeleteConfirm();
+      })
       .catch((err) => {
         setDeleteError(err.response?.data?.message || 'Could not delete the event.');
       })
