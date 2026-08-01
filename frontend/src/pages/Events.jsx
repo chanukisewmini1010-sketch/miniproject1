@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import eventApi from '../api/eventApi';
 import { formatEventDate, toInputDate } from '../utils/dateFormat';
 import {
+  IconCalendar,
   IconCheck,
   IconPencil,
   IconPlus,
@@ -137,6 +138,14 @@ function Events() {
       ignore = true;
     };
   }, []);
+
+  // deleting the last row on a page can leave us beyond the final page, with
+  // an empty table even though events still exist
+  useEffect(() => {
+    if (page > 0 && pageData.content.length === 0 && pageData.totalElements > 0) {
+      setPage(0);
+    }
+  }, [page, pageData]);
 
   function toggleSort(field) {
     if (sortField === field) {
@@ -372,10 +381,46 @@ function Events() {
             </label>
           </div>
 
-          {searching && rows.length === 0 ? (
-            <p className="table-empty">
-              No events match &quot;{appliedSearch.trim()}&quot;.
-            </p>
+          {pageData.totalElements === 0 ? (
+            <div className="events-empty">
+              <span className="events-empty-icon" aria-hidden="true">
+                <IconCalendar />
+              </span>
+
+              {searching ? (
+                <>
+                  <p className="events-empty-title">
+                    No events match &quot;{appliedSearch.trim()}&quot;
+                  </p>
+                  <p className="events-empty-hint">
+                    Try a different title, club or location.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-icon"
+                    onClick={() => setSearch('')}
+                  >
+                    <IconX />
+                    Clear search
+                  </button>
+                </>
+              ) : (
+                <>
+                  <p className="events-empty-title">No events yet</p>
+                  <p className="events-empty-hint">
+                    Add the first event and it will show up here.
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn-success btn-icon"
+                    onClick={openCreate}
+                  >
+                    <IconPlus />
+                    Add Event
+                  </button>
+                </>
+              )}
+            </div>
           ) : (
             <>
               <div className="events-table">

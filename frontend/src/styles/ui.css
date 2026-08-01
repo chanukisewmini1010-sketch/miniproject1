@@ -83,6 +83,38 @@
   font-size: 0.95rem;
 }
 
+.events-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 2.75rem 1rem;
+  border: 1px dashed #d5d8e0;
+  border-radius: 8px;
+  background-color: #fff;
+  text-align: center;
+}
+
+/* the icon sizes from font-size, so this scales the 1em svg up */
+.events-empty-icon {
+  display: inline-flex;
+  font-size: 2.4rem;
+  color: #c3c8d4;
+  line-height: 1;
+}
+
+.events-empty-title {
+  margin: 0.35rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.events-empty-hint {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
 .events-table {
   overflow-x: auto;
   margin-bottom: 1rem;
