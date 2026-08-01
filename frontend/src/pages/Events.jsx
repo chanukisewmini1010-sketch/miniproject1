@@ -20,11 +20,6 @@ const EMPTY_FORM = {
   location: '',
 };
 
-/**
- * Formats the ISO date string returned by the API (e.g. 2026-08-22T09:00:00)
- * into something readable. An ISO string with no timezone is parsed as local
- * time, which is what we want for campus event times.
- */
 function formatEventDate(value) {
   if (!value) {
     return '-';
@@ -41,19 +36,10 @@ function formatEventDate(value) {
   });
 }
 
-/**
- * A datetime-local input needs YYYY-MM-DDTHH:mm, while the API returns
- * seconds as well - so the tail is trimmed when loading an event for editing.
- */
 function toInputDate(value) {
   return value ? value.slice(0, 16) : '';
 }
 
-/**
- * Matches an event against the search term. Only the columns the user can
- * actually see are searched (title, club and location) - matching on
- * description would hide the reason a row appeared.
- */
 function matchesSearch(event, clubName, term) {
   if (!term) {
     return true;
@@ -72,11 +58,6 @@ function matchesSearch(event, clubName, term) {
   return haystack.includes(needle);
 }
 
-/**
- * Builds the request body. Empty optional fields are left out rather than sent
- * as blanks, which keeps the partial-update behaviour of PUT intact: a field
- * that is not sent keeps whatever value it already had.
- */
 function buildPayload(form) {
   const payload = {
     title: form.title.trim(),
@@ -98,12 +79,6 @@ function buildPayload(form) {
   return payload;
 }
 
-/**
- * Events listing page - loads events from GET /api/events and creates/edits
- * them through a modal dialog.
- * TODO (Member 4): delete is intentionally left out until the team agrees the
- * cascade policy (deleting an event also removes its registrations/feedback).
- */
 function Events() {
   const [events, setEvents] = useState([]);
   const [clubs, setClubs] = useState([]);
@@ -154,8 +129,6 @@ function Events() {
         }
       });
 
-    // clubs for the picker, served by our own endpoint so this does not depend
-    // on Member 3's ClubServiceImpl being finished
     eventApi
       .getClubOptions()
       .then((response) => {
@@ -184,8 +157,6 @@ function Events() {
     setDeleteError(null);
   }
 
-  // Escape closes whichever dialog is open, but not mid-request - that would
-  // hide the outcome of something still in flight
   useEffect(() => {
     const dialogOpen = showForm || deleteTarget !== null;
     if (!dialogOpen) {
@@ -208,7 +179,6 @@ function Events() {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [showForm, deleteTarget, saving, deleting]);
 
-  // stops the page behind the dialog from scrolling
   useEffect(() => {
     if (!showForm && deleteTarget === null) {
       return undefined;
@@ -271,7 +241,6 @@ function Events() {
       .then(() => loadEvents())
       .then(() => closeForm())
       .catch((err) => {
-        // the backend returns { timestamp, status, message } on failure
         setFormError(err.response?.data?.message || 'Could not save the event.');
       })
       .finally(() => setSaving(false));
@@ -295,9 +264,6 @@ function Events() {
       .finally(() => setDeleting(false));
   }
 
-  // EventDto carries only clubId, so the name is resolved here against the club
-  // list the form's picker already loads - no extra request, and no need to add
-  // a clubName field to the shared EventDto
   const clubNamesById = new Map(clubs.map((club) => [club.id, club.name]));
 
   function clubNameFor(event) {
@@ -305,7 +271,6 @@ function Events() {
       return '-';
     }
 
-    // falls back to the raw id if the club list has not arrived yet
     return clubNamesById.get(event.clubId) || `Club ${event.clubId}`;
   }
 
@@ -313,7 +278,6 @@ function Events() {
     .map((event) => ({ event, clubName: clubNameFor(event) }))
     .filter(({ event, clubName }) => matchesSearch(event, clubName, search));
 
-  // description may be absent entirely - the API omits null fields
   const rows = filtered.map(({ event, clubName }) => ({
     id: event.id,
     title: event.title,
@@ -441,8 +405,6 @@ function Events() {
         <div
           className="modal-overlay"
           role="presentation"
-          // mousedown rather than click, so selecting text inside the dialog
-          // and releasing outside it does not close the form
           onMouseDown={() => {
             if (!saving) {
               closeForm();

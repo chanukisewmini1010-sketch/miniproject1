@@ -24,12 +24,6 @@ public class EventController {
         return ResponseEntity.ok(eventService.getAllEvents());
     }
 
-    /**
-     * Clubs for the event form's club picker.
-     *
-     * Mapped before /{id} so "club-options" is not swallowed by the id path.
-     * Temporary - see EventService.getClubOptions().
-     */
     @GetMapping("/club-options")
     public ResponseEntity<List<ClubDto>> getClubOptions() {
         return ResponseEntity.ok(eventService.getClubOptions());

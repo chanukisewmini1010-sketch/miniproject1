@@ -12,13 +12,6 @@ public interface EventService {
 
     List<EventDto> getAllEvents();
 
-    /**
-     * Clubs available to pick from when creating or editing an event.
-     *
-     * Lives here rather than in ClubService so Event Management is not blocked
-     * on Member 3. Once ClubServiceImpl.getAllClubs() returns real data, the
-     * frontend can point at /api/clubs instead and this can be removed.
-     */
     List<ClubDto> getClubOptions();
 
     EventDto getEventById(Long id);

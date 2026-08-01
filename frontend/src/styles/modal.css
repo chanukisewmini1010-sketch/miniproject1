@@ -1,10 +1,3 @@
-/* ============================================================
-   Modal dialog
-   Kept in its own file so main.css (shared by every page) is
-   untouched. Promote to a components/Modal.jsx if the team wants
-   to reuse this elsewhere.
-   ============================================================ */
-
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -32,8 +25,6 @@
   margin-bottom: 1rem;
 }
 
-/* the shared .form rule caps width at 400px, which looks cramped
-   once it is inside a dialog that is already constrained */
 .modal .form {
   max-width: none;
 }
