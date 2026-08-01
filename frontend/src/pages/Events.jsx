@@ -6,6 +6,7 @@ import '../styles/ui.css';
 
 const columns = [
   { key: 'title', label: 'Event Title' },
+  { key: 'club', label: 'Club' },
   { key: 'eventDate', label: 'Date' },
   { key: 'location', label: 'Location' },
   { key: 'actions', label: 'Actions' },
@@ -50,10 +51,10 @@ function toInputDate(value) {
 
 /**
  * Matches an event against the search term. Only the columns the user can
- * actually see are searched (title and location) - matching on description
- * would hide the reason a row appeared.
+ * actually see are searched (title, club and location) - matching on
+ * description would hide the reason a row appeared.
  */
-function matchesSearch(event, term) {
+function matchesSearch(event, clubName, term) {
   if (!term) {
     return true;
   }
@@ -63,7 +64,7 @@ function matchesSearch(event, term) {
     return true;
   }
 
-  const haystack = [event.title, event.location]
+  const haystack = [event.title, clubName, event.location]
     .filter(Boolean)
     .join(' ')
     .toLowerCase();
@@ -294,12 +295,29 @@ function Events() {
       .finally(() => setDeleting(false));
   }
 
-  const filtered = events.filter((event) => matchesSearch(event, search));
+  // EventDto carries only clubId, so the name is resolved here against the club
+  // list the form's picker already loads - no extra request, and no need to add
+  // a clubName field to the shared EventDto
+  const clubNamesById = new Map(clubs.map((club) => [club.id, club.name]));
+
+  function clubNameFor(event) {
+    if (event.clubId == null) {
+      return '-';
+    }
+
+    // falls back to the raw id if the club list has not arrived yet
+    return clubNamesById.get(event.clubId) || `Club ${event.clubId}`;
+  }
+
+  const filtered = events
+    .map((event) => ({ event, clubName: clubNameFor(event) }))
+    .filter(({ event, clubName }) => matchesSearch(event, clubName, search));
 
   // description may be absent entirely - the API omits null fields
-  const rows = filtered.map((event) => ({
+  const rows = filtered.map(({ event, clubName }) => ({
     id: event.id,
     title: event.title,
+    club: clubName,
     eventDate: formatEventDate(event.eventDate),
     location: event.location || '-',
     actions: (
@@ -347,7 +365,7 @@ function Events() {
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Filter by title or location"
+                placeholder="Filter by title, club or location"
               />
             </label>
           </div>

@@ -93,9 +93,14 @@
 
 /* width:1% + nowrap shrinks a column to its content in a
    width:100% table, letting the title column absorb the slack.
-   That stops the columns resizing as the rows change. */
+   That stops the columns resizing as the rows change.
+
+   Positional, so it depends on the column order in Events.jsx:
+   1 title | 2 club | 3 date | 4 location | 5 actions */
 .events-table .table th:nth-child(2),
-.events-table .table td:nth-child(2) {
+.events-table .table td:nth-child(2),
+.events-table .table th:nth-child(3),
+.events-table .table td:nth-child(3) {
   width: 1%;
   white-space: nowrap;
 }
