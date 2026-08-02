@@ -1,5 +1,8 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
+
 import Table from '../components/Table';
+
+import registrationApi from '../api/registrationApi';
 
 /**
  * Registrations page - shows a student's event registrations.
