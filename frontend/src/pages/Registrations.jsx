@@ -16,16 +16,19 @@ function Registrations() {
   ];
 
   const [registrations, setRegistrations] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
         fetchRegistrations();
     }, []);
 
-  const fetchRegistrations = async () => {
+    const fetchRegistrations = async () => {
         try {
             const response = await registrationApi.getAllRegistrations();
             setRegistrations(response.data);
         } catch (error) {
-            console.error("Error fetching registrations:", error);
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
     };
 
