@@ -1,8 +1,12 @@
 package com.campushub.controller;
 
+import com.campushub.dto.ClubDto;
 import com.campushub.dto.EventDto;
 import com.campushub.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +14,6 @@ import java.util.List;
 
 /**
  * REST controller for Event management.
- * TODO (Member 4): wire up real responses once EventServiceImpl is implemented.
  */
 @RestController
 @RequestMapping("/api/events")
@@ -20,8 +23,21 @@ public class EventController {
     private EventService eventService;
 
     @GetMapping
-    public ResponseEntity<List<EventDto>> getAllEvents() {
-        return ResponseEntity.ok(eventService.getAllEvents());
+    public ResponseEntity<Page<EventDto>> getAllEvents(
+            @RequestParam(defaultValue = "") String search,
+            @PageableDefault(size = 5, sort = "eventDate") Pageable pageable) {
+        return ResponseEntity.ok(eventService.getAllEvents(search, pageable));
+    }
+
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<EventDto>> getUpcomingEvents(
+            @RequestParam(defaultValue = "5") int limit) {
+        return ResponseEntity.ok(eventService.getUpcomingEvents(limit));
+    }
+
+    @GetMapping("/club-options")
+    public ResponseEntity<List<ClubDto>> getClubOptions() {
+        return ResponseEntity.ok(eventService.getClubOptions());
     }
 
     @GetMapping("/{id}")

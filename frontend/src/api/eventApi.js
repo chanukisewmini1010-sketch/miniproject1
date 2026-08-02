@@ -1,8 +1,9 @@
 import apiClient from './axiosConfig';
 
-// TODO (Member 4): use these functions inside the Events page.
 const eventApi = {
-  getAll: () => apiClient.get('/events'),
+  getAll: (params) => apiClient.get('/events', { params }),
+  getUpcoming: (limit = 5) => apiClient.get('/events/upcoming', { params: { limit } }),
+  getClubOptions: () => apiClient.get('/events/club-options'),
   getById: (id) => apiClient.get(`/events/${id}`),
   create: (data) => apiClient.post('/events', data),
   update: (id, data) => apiClient.put(`/events/${id}`, data),

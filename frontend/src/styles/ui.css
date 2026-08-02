@@ -1,0 +1,298 @@
+/* Variants are written as .btn.btn-x rather than .btn-x so they beat the
+   base .btn rule in main.css on specificity (0,2,0 vs 0,1,0) instead of
+   relying on which stylesheet happens to be injected last. */
+
+.btn.btn-success {
+  background-color: #15803d;
+}
+
+.btn.btn-success:hover {
+  background-color: #166534;
+}
+
+.btn.btn-warning {
+  background-color: #b45309;
+}
+
+.btn.btn-warning:hover {
+  background-color: #92400e;
+}
+
+.btn.btn-secondary {
+  background-color: #4b5563;
+}
+
+.btn.btn-secondary:hover {
+  background-color: #374151;
+}
+
+.btn.btn-danger {
+  background-color: #b91c1c;
+}
+
+.btn.btn-danger:hover {
+  background-color: #991b1b;
+}
+
+.btn.btn-sm {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+/* applied per-button rather than to .btn, so the other members' pages keep
+   the shared button layout untouched */
+.btn.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* 1em sizing means the icon scales with the button's font-size, so btn-sm
+   gets a proportionally smaller icon for free */
+.btn.btn-icon svg {
+  flex-shrink: 0;
+}
+
+.btn:disabled,
+.btn:disabled:hover {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.events-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.events-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  min-width: 15rem;
+}
+
+.events-search input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.events-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 2.75rem 1rem;
+  border: 1px dashed #d5d8e0;
+  border-radius: 8px;
+  background-color: #fff;
+  text-align: center;
+}
+
+/* the icon sizes from font-size, so this scales the 1em svg up */
+.events-empty-icon {
+  display: inline-flex;
+  font-size: 2.4rem;
+  color: #c3c8d4;
+  line-height: 1;
+}
+
+.events-empty-title {
+  margin: 0.35rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.events-empty-hint {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.events-table {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.events-table .table th,
+.events-table .table td {
+  vertical-align: middle;
+  padding: 0.7rem 0.9rem;
+}
+
+.events-table .table th {
+  background-color: #f5f6f8;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* shown in full - the description is not visible anywhere else, so it wraps
+   rather than being truncated. max-width keeps it from taking over the table,
+   and overflow-wrap handles a long unbroken string. */
+.events-desc {
+  display: block;
+  max-width: 24rem;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* column order in Events.jsx:
+   1 title | 2 club | 3 date | 4 location | 5 description | 6 actions */
+.events-table .table th:nth-child(2),
+.events-table .table td:nth-child(2),
+.events-table .table th:nth-child(3),
+.events-table .table td:nth-child(3) {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.events-table .table th:last-child,
+.events-table .table td:last-child {
+  width: 1%;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.upcoming-list {
+  list-style: none;
+  margin: 0 0 0.85rem;
+  padding: 0;
+}
+
+.upcoming-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.4rem;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.upcoming-item + .upcoming-item {
+  border-top: 1px solid #eee;
+}
+
+.upcoming-item:hover {
+  background-color: #f5f6fa;
+}
+
+/* calendar-style date block - the main visual anchor of the card */
+.upcoming-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 2.9rem;
+  padding: 0.3rem 0.35rem;
+  border-radius: 6px;
+  background-color: #1e2a5e;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.upcoming-month {
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+.upcoming-day {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+/* min-width:0 lets the ellipsis work on the flex children below */
+.upcoming-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.upcoming-title,
+.upcoming-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upcoming-title {
+  font-weight: 600;
+}
+
+.upcoming-meta {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.upcoming-when {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #15803d;
+}
+
+.upcoming-all {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.th-sort-arrow {
+  font-size: 0.7em;
+  opacity: 0.45;
+}
+
+.th-sort:hover .th-sort-arrow {
+  opacity: 0.9;
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.pager-status {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.pager-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+  font-size: 0.9rem;
+}
+
+.row-actions {
+  display: inline-flex;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.9rem;
+}

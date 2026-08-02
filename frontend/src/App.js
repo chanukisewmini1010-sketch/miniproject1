@@ -1,4 +1,5 @@
 import React from 'react';
+import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
@@ -21,6 +22,7 @@ function App() {
         </main>
       </div>
       <Footer />
+      <Toaster position="top-center" toastOptions={{ duration: 3500 }} />
     </div>
   );
 }
