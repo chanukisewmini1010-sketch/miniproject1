@@ -14,7 +14,7 @@ function Registrations() {
     { key: 'status', label: 'Status' },
     { key: 'registeredAt', label: 'Registered At' },
   ];
-
+  const [error, setError] = useState("");
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -26,8 +26,8 @@ function Registrations() {
             const response = await registrationApi.getAllRegistrations();
             setRegistrations(response.data);
         } catch (error) {
-            console.error(error);
-        } finally {
+            setError("Failed to load registrations");
+        }finally {
             setLoading(false);
         }
     };
