@@ -100,8 +100,32 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public RegistrationDto updateRegistration(Long id, RegistrationDto registrationDto) {
-        // TODO: fetch existing registration, update fields, save, and return updated RegistrationDto
-        return null;
+            Long id,
+            RegistrationDto registrationDto) {
+
+
+                Registration registration =
+                        registrationRepository.findById(id)
+                                .orElseThrow(() ->
+                                        new RuntimeException(
+                                                "Registration not found"));
+
+
+
+                registration.setStatus(
+                        Registration.Status.valueOf(
+                                registrationDto.getStatus()
+                        )
+                );
+
+
+
+                Registration updatedRegistration =
+                        registrationRepository.save(registration);
+
+
+
+                return convertToDto(updatedRegistration);
     }
 
     @Override
