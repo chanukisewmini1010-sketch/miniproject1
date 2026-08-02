@@ -15,8 +15,10 @@ function Registrations() {
     { key: 'registeredAt', label: 'Registered At' },
   ];
 
-    const [registrations, setRegistrations] = useState([]);
-
+  const [registrations, setRegistrations] = useState([]);
+  useEffect(() => {
+        fetchRegistrations();
+    }, []);
   return (
     <div className="page">
       <h1>Registrations</h1>
