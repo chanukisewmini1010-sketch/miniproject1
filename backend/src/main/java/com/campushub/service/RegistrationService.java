@@ -1,13 +1,8 @@
 package com.campushub.service;
 
 import com.campushub.dto.RegistrationDto;
-
 import java.util.List;
 
-/**
- * Service contract for Registration management.
- * TODO (Member 5): implement business logic in RegistrationServiceImpl.
- */
 public interface RegistrationService {
 
     List<RegistrationDto> getAllRegistrations();
