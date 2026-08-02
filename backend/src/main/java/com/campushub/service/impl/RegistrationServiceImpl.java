@@ -56,8 +56,46 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public RegistrationDto createRegistration(RegistrationDto registrationDto) {
-        // TODO: map RegistrationDto to entity, save, and return saved RegistrationDto
-        return null;
+        RegistrationDto registrationDto) {
+
+
+            Event event =
+                    eventRepository.findById(registrationDto.getEventId())
+                            .orElseThrow(() ->
+                                    new RuntimeException("Event not found"));
+
+
+            User user =
+                    userRepository.findById(registrationDto.getUserId())
+                            .orElseThrow(() ->
+                                    new RuntimeException("User not found"));
+
+
+
+            Registration registration = new Registration();
+
+
+            registration.setEvent(event);
+
+            registration.setUser(user);
+
+            registration.setRegisteredAt(LocalDateTime.now());
+
+
+            registration.setStatus(
+                    Registration.Status.valueOf(
+                            registrationDto.getStatus()
+                    )
+            );
+
+
+
+            Registration savedRegistration =
+                    registrationRepository.save(registration);
+
+
+
+            return convertToDto(savedRegistration)
     }
 
     @Override
