@@ -1,5 +1,6 @@
 package com.campushub.service.impl;
 
+
 import com.campushub.dto.RegistrationDto;
 import com.campushub.entity.Event;
 import com.campushub.entity.Registration;
@@ -18,34 +19,40 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Placeholder implementation of RegistrationService.
- * TODO (Member 5): implement mapping between Registration entity and RegistrationDto,
- * and add real business logic for each method below.
- */
+
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
+
 
     @Autowired
     private RegistrationRepository registrationRepository;
 
+
     @Autowired
     private EventRepository eventRepository;
+
 
     @Autowired
     private UserRepository userRepository;
 
+
+
+    // Get all registrations
     @Override
     public List<RegistrationDto> getAllRegistrations() {
-        // TODO: fetch registrations and map to RegistrationDto list
+
         return registrationRepository.findAll()
                 .stream()
                 .map(this::convertToDto)
-                .collect(Collectors.toList());;
+                .collect(Collectors.toList());
     }
 
+
+
+    // Get registration by ID
     @Override
     public RegistrationDto getRegistrationById(Long id) {
+
         Registration registration =
                 registrationRepository.findById(id)
                         .orElseThrow(() ->
@@ -54,115 +61,134 @@ public class RegistrationServiceImpl implements RegistrationService {
         return convertToDto(registration);
     }
 
+
+
+    // Create registration
     @Override
-    public RegistrationDto createRegistration(RegistrationDto registrationDto) {
-        RegistrationDto registrationDto) {
+    public RegistrationDto createRegistration(
+            RegistrationDto registrationDto) {
 
 
-            Event event =
-                    eventRepository.findById(registrationDto.getEventId())
-                            .orElseThrow(() ->
-                                    new RuntimeException("Event not found"));
+        Event event =
+                eventRepository.findById(registrationDto.getEventId())
+                        .orElseThrow(() ->
+                                new RuntimeException("Event not found"));
 
 
-            User user =
-                    userRepository.findById(registrationDto.getUserId())
-                            .orElseThrow(() ->
-                                    new RuntimeException("User not found"));
-
-
-
-            Registration registration = new Registration();
-
-
-            registration.setEvent(event);
-
-            registration.setUser(user);
-
-            registration.setRegisteredAt(LocalDateTime.now());
-
-
-            registration.setStatus(
-                    Registration.Status.valueOf(
-                            registrationDto.getStatus()
-                    )
-            );
+        User user =
+                userRepository.findById(registrationDto.getUserId())
+                        .orElseThrow(() ->
+                                new RuntimeException("User not found"));
 
 
 
-            Registration savedRegistration =
-                    registrationRepository.save(registration);
+        Registration registration = new Registration();
+
+
+        registration.setEvent(event);
+
+        registration.setUser(user);
+
+        registration.setRegisteredAt(LocalDateTime.now());
+
+
+        registration.setStatus(
+                Registration.Status.valueOf(
+                        registrationDto.getStatus()
+                )
+        );
 
 
 
-            return convertToDto(savedRegistration)
+        Registration savedRegistration =
+                registrationRepository.save(registration);
+
+
+
+        return convertToDto(savedRegistration);
     }
 
+
+
+
+
+    // Update registration
     @Override
-    public RegistrationDto updateRegistration(Long id, RegistrationDto registrationDto) {
+    public RegistrationDto updateRegistration(
             Long id,
             RegistrationDto registrationDto) {
 
 
-                Registration registration =
-                        registrationRepository.findById(id)
-                                .orElseThrow(() ->
-                                        new RuntimeException(
-                                                "Registration not found"));
+        Registration registration =
+                registrationRepository.findById(id)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Registration not found"));
 
 
 
-                registration.setStatus(
-                        Registration.Status.valueOf(
-                                registrationDto.getStatus()
-                        )
-                );
+        registration.setStatus(
+                Registration.Status.valueOf(
+                        registrationDto.getStatus()
+                )
+        );
 
 
 
-                Registration updatedRegistration =
-                        registrationRepository.save(registration);
+        Registration updatedRegistration =
+                registrationRepository.save(registration);
 
 
 
-                return convertToDto(updatedRegistration);
+        return convertToDto(updatedRegistration);
     }
 
+
+
+
+
+    // Delete registration
     @Override
     public void deleteRegistration(Long id) {
-                if (!registrationRepository.existsById(id)) {
-                    throw new RuntimeException("Registration not found");
-                }
 
-                registrationRepository.deleteById(id);
+        if (!registrationRepository.existsById(id)) {
+            throw new RuntimeException("Registration not found");
+        }
+
+        registrationRepository.deleteById(id);
     }
-            private RegistrationDto convertToDto(
-                    Registration registration) {
 
 
-                RegistrationDto dto = new RegistrationDto();
 
 
-                dto.setId(registration.getId());
+
+    // Convert Entity -> DTO
+    private RegistrationDto convertToDto(
+            Registration registration) {
 
 
-                dto.setEventId(
-                        registration.getEvent().getId()
-                );
+        RegistrationDto dto = new RegistrationDto();
 
 
-                dto.setUserId(
-                        registration.getUser().getId()
-                );
+        dto.setId(registration.getId());
 
 
-                dto.setStatus(
-                        registration.getStatus().name()
-                );
+        dto.setEventId(
+                registration.getEvent().getId()
+        );
 
 
-                return dto;
-            }
-}
+        dto.setUserId(
+                registration.getUser().getId()
+        );
+
+
+        dto.setStatus(
+                registration.getStatus().name()
+        );
+
+
+        return dto;
     }
+
 }
