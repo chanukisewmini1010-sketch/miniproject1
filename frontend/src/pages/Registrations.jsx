@@ -19,6 +19,16 @@ function Registrations() {
   useEffect(() => {
         fetchRegistrations();
     }, []);
+
+  const fetchRegistrations = async () => {
+        try {
+            const response = await registrationApi.getAllRegistrations();
+            setRegistrations(response.data);
+        } catch (error) {
+            console.error("Error fetching registrations:", error);
+        }
+    };
+
   return (
     <div className="page">
       <h1>Registrations</h1>
