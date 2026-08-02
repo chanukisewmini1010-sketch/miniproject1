@@ -15,7 +15,7 @@ function Registrations() {
     { key: 'registeredAt', label: 'Registered At' },
   ];
 
-  const placeholderData = [];
+    const [registrations, setRegistrations] = useState([]);
 
   return (
     <div className="page">
