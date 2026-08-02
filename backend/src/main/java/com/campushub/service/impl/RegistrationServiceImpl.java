@@ -29,6 +29,12 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Autowired
     private RegistrationRepository registrationRepository;
 
+    @Autowired
+    private EventRepository eventRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public List<RegistrationDto> getAllRegistrations() {
         // TODO: fetch registrations and map to RegistrationDto list
