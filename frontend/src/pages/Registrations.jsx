@@ -33,7 +33,7 @@ function Registrations() {
     <div className="page">
       <h1>Registrations</h1>
       <p>Placeholder page - registration list will be loaded from the API.</p>
-      <Table columns={columns} data={placeholderData} />
+        <Table columns={columns} data={registrations} />
     </div>
   );
 }
