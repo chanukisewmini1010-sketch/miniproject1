@@ -14,6 +14,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/registrations")
+@CrossOrigin
 public class RegistrationController {
 
     @Autowired
