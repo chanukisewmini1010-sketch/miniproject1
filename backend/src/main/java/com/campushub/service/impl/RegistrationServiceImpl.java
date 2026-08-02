@@ -130,6 +130,39 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public void deleteRegistration(Long id) {
-        // TODO: delete registration by id
+                if (!registrationRepository.existsById(id)) {
+                    throw new RuntimeException("Registration not found");
+                }
+
+                registrationRepository.deleteById(id);
+    }
+            private RegistrationDto convertToDto(
+                    Registration registration) {
+
+
+                RegistrationDto dto = new RegistrationDto();
+
+
+                dto.setId(registration.getId());
+
+
+                dto.setEventId(
+                        registration.getEvent().getId()
+                );
+
+
+                dto.setUserId(
+                        registration.getUser().getId()
+                );
+
+
+                dto.setStatus(
+                        registration.getStatus().name()
+                );
+
+
+                return dto;
+            }
+}
     }
 }
