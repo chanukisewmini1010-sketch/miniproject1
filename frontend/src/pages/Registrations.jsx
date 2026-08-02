@@ -25,7 +25,8 @@ function Registrations() {
         try {
             const response = await registrationApi.getAllRegistrations();
             setRegistrations(response.data);
-        } catch (error) {
+        } //Add error message handling
+        catch (error) {
             setError("Failed to load registrations");
         }finally {
             setLoading(false);
