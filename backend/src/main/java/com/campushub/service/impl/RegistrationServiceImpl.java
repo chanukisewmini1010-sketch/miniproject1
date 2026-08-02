@@ -1,13 +1,22 @@
 package com.campushub.service.impl;
 
 import com.campushub.dto.RegistrationDto;
+import com.campushub.entity.Event;
+import com.campushub.entity.Registration;
+import com.campushub.entity.User;
+
+import com.campushub.repository.EventRepository;
+import com.campushub.repository.UserRepository;
 import com.campushub.repository.RegistrationRepository;
+
 import com.campushub.service.RegistrationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Placeholder implementation of RegistrationService.
