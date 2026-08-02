@@ -4,10 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * Data Transfer Object for Registration.
- * TODO (Member 5): map fields to/from the Registration entity in the service layer.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
